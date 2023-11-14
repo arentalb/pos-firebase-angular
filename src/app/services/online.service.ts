@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { AngularFireDatabase } from "@angular/fire/compat/database";
-import { from, Observable } from 'rxjs';
+import {from, map, Observable} from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { Product } from "../models/product";
 
@@ -14,6 +14,23 @@ export class OnlineService {
     private storage: AngularFireStorage,
     private db: AngularFireDatabase
   ) {}
+
+  getProducts(): Observable<Product[]> {
+    const productsRef = this.db.list('products');
+    return productsRef.snapshotChanges().pipe(
+      map(changes => {
+        return changes.map(c => {
+          const data = c.payload.val() as Product;
+          const key = c.payload.key;
+          return { key, ...data };
+        });
+      }),
+      catchError(error => {
+        console.error('Error fetching products:', error);
+        throw error;
+      })
+    );
+  }
 
   addNewProduct(product: Product): Observable<void> {
     console.log("adding new product .....")

@@ -13,4 +13,8 @@ export class ProductService {
    return  this.onlineService.addNewProduct(product);
 
   }
+
+  getProducts() {
+    return this.onlineService.getProducts()
+  }
 }
