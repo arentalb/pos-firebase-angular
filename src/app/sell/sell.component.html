@@ -1,0 +1,27 @@
+<div class="flex m-4 gap-1">
+  <div class="w-3/5 p-4 rounded-lg shadow-lg flex flex-col text-xl">
+    <p class="border-b-2 border-b-orange-500 pb-2 mb-4">products for sell</p>
+    <div class="flex flex-wrap gap-4 justify-center">
+
+      <div *ngFor="let product of sellProducts">
+        <app-available-products [product]="product" (addProductEvent)="sellProduct($event)"></app-available-products>
+      </div>
+
+    </div>
+
+  </div>
+  <div class="w-2/5 p-4 rounded-lg shadow-lg flex flex-col items-center text-xl">
+
+    <p class="border-b-2 border-b-orange-500 pb-2 mb-4">products in document</p>
+
+    <div *ngFor="let product of soldProducts">
+      <app-sold-products [product]="product" (removeProductEvent)="removeProduct($event)"></app-sold-products>
+    </div>
+
+    <div class="flex justify-center items-center w-full mt-4">
+      <button [disabled]="soldProducts.length<=0 " (click)="checkout()" class=" bg-orange-400 rounded-md py-2 px-5 text-white">
+        create document
+      </button>
+    </div>
+  </div>
+</div>

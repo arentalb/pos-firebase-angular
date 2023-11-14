@@ -1,0 +1,57 @@
+<div class="bg-white rounded-lg shadow-lg p-4 mb-4 flex flex-col justify-center items-center w-52 ">
+  <div class="mb-4  h-40 w-40">
+    <img src="{{product.image}}" alt="{{product.name}}" class="object-cover h-40 w-40 rounded-md">
+  </div>
+
+
+  <div class="flex flex-col  items-start justify-start w-full">
+
+    <div class="flex justify-between w-full items-center">
+      <p class="font-semibold text-gray-600 ">name </p>
+      <p class="text-sm">{{product.name}}</p>
+    </div>
+    <div class="flex justify-between w-full items-center">
+      <p class="font-semibold text-gray-600">quantity </p>
+      <p class="text-sm">{{product.quantity}}</p>
+    </div>
+    <div class="flex justify-between w-full items-center">
+      <p class="font-semibold text-gray-600">price </p>
+      <p class="text-sm">{{product.salePrice}}</p>
+    </div>
+    <div class="flex justify-between w-full items-center">
+      <p class="font-semibold text-gray-600">total </p>
+      <p class="text-sm">{{product.salePrice * psc}}</p>
+    </div>
+
+    <div class="flex justify-evenly items-center w-full mt-2">
+      <div class="sm:flex sm:justify-center sm:items-center">
+        <div class="flex justify-between  ">
+          <div class="border border-orange-400  px-2 space-x-4 py-1 flex items-center justify-between  ">
+            <button (click)="dec() " class="text-orange-500">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                   stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+              </svg>
+            </button>
+            <p>{{psc}}</p>
+            <button (click)="inc()" class="text-orange-500">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                   stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="flex justify-center items-center w-full mt-4">
+      <button (click)="addProduct()" class=" bg-orange-400 rounded-md py-2 px-5 text-white">
+        add
+      </button>
+    </div>
+
+  </div>
+</div>

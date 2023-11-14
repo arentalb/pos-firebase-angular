@@ -1,0 +1,48 @@
+<div class="pb-4 border-b-2 border-b-orange-500">
+
+
+  <form #productForm="ngForm" (ngSubmit)="onSubmit(productForm)" class="max-w-md mx-auto mt-6 p-4 bg-white rounded shadow-lg">
+    <div class="mb-4">
+      <label for="name" class="block text-gray-700 font-bold">Product Name</label>
+      <input type="text" id="name" name="name" [(ngModel)]="product.name" required
+             class="w-full p-2 border rounded-md">
+    </div>
+
+    <div class="mb-4">
+      <label for="basePrice" class="block text-gray-700 font-bold">Base Price</label>
+      <input type="number" id="basePrice" name="basePrice" [(ngModel)]="product.basePrice" required
+             class="w-full p-2 border rounded-md">
+    </div>
+
+    <div class="mb-4">
+      <label for="salePrice" class="block text-gray-700 font-bold">Sale Price</label>
+      <input type="number" id="salePrice" name="salePrice" [(ngModel)]="product.salePrice" required
+             class="w-full p-2 border rounded-md">
+    </div>
+
+    <div class="mb-4">
+      <label for="quantity" class="block text-gray-700 font-bold">Quantity</label>
+      <input type="number" id="quantity" name="quantity" [(ngModel)]="product.quantity" required
+             class="w-full p-2 border rounded-md">
+    </div>
+
+    <div class="mb-4">
+      <label for="category" class="block text-gray-700 font-bold">Category</label>
+      <select id="category" name="category" [(ngModel)]="product.category" required
+              class="w-full p-2 border rounded-md">
+        <option *ngFor="let category of categoryValues" [value]="category">{{ category }}</option>
+      </select>
+    </div>
+
+    <div class="mb-4">
+      <label for="image" class="block text-gray-700 font-bold">Image</label>
+      <input type="file" id="image" name="image" accept="image/*" (change)="onImageChange($event)" required
+             class="w-full p-2 border rounded-md">
+    </div>
+    <button type="submit" [disabled]="productForm.invalid" class="w-full p-2  bg-orange-400 text-gray-100  rounded-md">
+      ADD
+    </button>
+  </form>
+
+
+</div>

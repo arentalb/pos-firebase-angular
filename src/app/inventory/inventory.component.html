@@ -1,0 +1,38 @@
+<div class="p-4">
+  <div>
+    <div>
+      <div *ngIf="!formVisibility" class="flex justify-start items-center space-x-2">
+        <button (click)="toggleForm()" class=" bg-orange-400 rounded-md py-2.5 px-5 text-gray-100">show form </button>
+        <p> to add product click here </p>
+      </div>
+      <div *ngIf="formVisibility" class="flex justify-start items-center space-x-2">
+        <button (click)="toggleForm()" class=" bg-orange-400 rounded-md py-2.5 px-5 text-gray-100">hide form </button>
+        <p> to cancel adding  product click here </p>
+      </div>
+    </div>
+
+    <div *ngIf="formVisibility && !loading">
+      <div *ngIf=" error " class="flex justify-center items-center text-2xl text-red-500">
+        <p>{{error}}</p>
+      </div>
+      <div *ngIf=" success " class="flex justify-center items-center text-2xl text-green-400">
+        <p>{{success}}</p>
+      </div>
+      <app-product-form (productChanged)="addProduct($event)"></app-product-form>
+    </div>
+
+
+    <div *ngIf="loading && formVisibility" class="flex justify-center items-center">
+      <app-circle-loading></app-circle-loading>
+
+    </div>
+
+  </div>
+  <div class="my-4 flex flex-wrap gap-6 justify-center sm:justify-start items-center">
+    <div *ngFor="let pro of products">
+      <app-products [product]="pro"></app-products>
+
+    </div>
+  </div>
+
+</div>
