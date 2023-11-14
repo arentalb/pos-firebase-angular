@@ -7,6 +7,7 @@ export interface Product {
   salePrice :number ;
   quantity :number ;
   image : File;
+  imageUrl: string;
   category :Category;
   sellQuantity:number ;
 }

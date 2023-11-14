@@ -14,6 +14,11 @@ import { SellComponent } from './sell/sell.component';
 import { SoldProductsComponent } from './sell/sold-products/sold-products.component';
 import { AvailableProductsComponent } from './sell/available-products/available-products.component';
 import {FormsModule} from "@angular/forms";
+import {environment} from "../environments/environment";
+import {AngularFireModule} from "@angular/fire/compat";
+import {AngularFireStorageModule} from "@angular/fire/compat/storage";
+import {AngularFireDatabaseModule} from "@angular/fire/compat/database";
+
 
 
 
@@ -35,6 +40,9 @@ import {FormsModule} from "@angular/forms";
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireStorageModule,
+    AngularFireDatabaseModule,
 
   ],
   providers: [],

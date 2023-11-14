@@ -19,6 +19,7 @@ export class ProductFormComponent {
     salePrice :null ,
     quantity :null ,
     image : null,
+    imageUrl : null,
     category :null,
     sellQuantity:null ,
   }
@@ -29,7 +30,6 @@ export class ProductFormComponent {
   onSubmit(form: NgForm) {
     if (form.valid && this.product.image !== null ) {
       this.productChanged.emit(this.product)
-      console.log(this.product)
     }
   }
 
@@ -40,5 +40,6 @@ export class ProductFormComponent {
       this.product.image = file;
 
     }
+
   }
 }
