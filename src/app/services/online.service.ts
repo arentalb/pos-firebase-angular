@@ -16,13 +16,15 @@ export class OnlineService {
   ) {}
 
   getProducts(): Observable<Product[]> {
+    console.log("in getProducts ")
     const productsRef = this.db.list('products');
     return productsRef.snapshotChanges().pipe(
       map(changes => {
         return changes.map(c => {
           const data = c.payload.val() as Product;
           const key = c.payload.key;
-          return { key, ...data };
+          data.key = key
+          return {  ...data };
         });
       }),
       catchError(error => {

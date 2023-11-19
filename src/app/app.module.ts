@@ -15,10 +15,11 @@ import { SoldProductsComponent } from './sell/sold-products/sold-products.compon
 import { AvailableProductsComponent } from './sell/available-products/available-products.component';
 import {FormsModule} from "@angular/forms";
 import {environment} from "../environments/environment";
-import {AngularFireModule} from "@angular/fire/compat";
 import {AngularFireStorageModule} from "@angular/fire/compat/storage";
 import {AngularFireDatabaseModule} from "@angular/fire/compat/database";
 import { ServiceWorkerModule } from '@angular/service-worker';
+import {HttpClientModule} from "@angular/common/http";
+import {AngularFireModule} from "@angular/fire/compat";
 
 
 
@@ -41,9 +42,13 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    HttpClientModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireStorageModule,
     AngularFireDatabaseModule,
+
+
+
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable

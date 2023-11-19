@@ -8,5 +8,7 @@ cd dist/pos
 :: Stop the HTTP server if it's already running
 taskkill /F /IM http-server >nul 2>&1
 
-:: Start the HTTP server with the specified proxy and destination port
-call http-server -c-1 --proxy http://localhost:9000 -p 8083
+http-server -c-1 --proxy http://localhost:8083/firebase-api -p 9000
+
+
+

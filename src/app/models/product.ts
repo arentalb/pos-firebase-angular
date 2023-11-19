@@ -1,7 +1,7 @@
 import {Category} from "./category";
 
 export interface Product {
-  id ?: number ;
+  key ?: string ;
   name :string ;
   basePrice :number ;
   salePrice :number ;
