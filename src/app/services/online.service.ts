@@ -4,6 +4,7 @@ import { AngularFireDatabase } from "@angular/fire/compat/database";
 import {from, map, Observable} from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { Product } from "../models/product";
+import {ImageService} from "./image.service";
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,8 @@ export class OnlineService {
 
   constructor(
     private storage: AngularFireStorage,
-    private db: AngularFireDatabase
+    private db: AngularFireDatabase,
+    private imageService :ImageService
   ) {}
 
   getProducts(): Observable<Product[]> {
@@ -34,23 +36,30 @@ export class OnlineService {
     );
   }
 
+   imageName :string = " "
   addNewProduct(product: Product): Observable<void> {
     console.log("adding new product .....")
-    return from(this.uploadImage(product.image))
-      .pipe(
-        switchMap(imageUrl => this.saveProductToDatabase(product, imageUrl)),
-        catchError(error => {
-          console.error('Error adding new product:', error);
-          throw error;
-        })
-      );
+    this.imageName = product.image.name
+
+    return from(this.imageService.convertImageToBase64(product.image)).pipe(
+      switchMap(base64Image => this.uploadImage(base64Image)),
+      switchMap(imageUrl => this.saveProductToDatabase(product, imageUrl)),
+      catchError(error => {
+        console.error('Error adding new product:', error);
+        throw error;
+      })
+    );
   }
 
-  private uploadImage(image: File): Promise<string> {
-    const filePath = `images/${Date.now()}_${image.name}`;
+
+
+  private uploadImage(image: string): Promise<string> {
+    console.log(this.imageName)
+    const filePath = `images/${Date.now()}_${this.imageName}`;
+    console.log(filePath)
     const storageRef = this.storage.ref(filePath);
-    console.log("image added successfully")
-    return storageRef.put(image).then(() => storageRef.getDownloadURL().toPromise());
+    console.log("image added successfully");
+    return storageRef.putString(image, 'data_url').then(() => storageRef.getDownloadURL().toPromise());
   }
 
   private saveProductToDatabase(product: Product, imageUrl: string): Observable<void> {
@@ -71,5 +80,4 @@ export class OnlineService {
         });
     });
   }
-
 }
