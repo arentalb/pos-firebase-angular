@@ -27,4 +27,9 @@ export class OfflineService {
       })
     );
   }
+
+  addNewProductForSyncLater(product: Product) {
+
+    return   from(this.rxdbService.addNewProductForSyncLater(product))
+  }
 }

@@ -22,7 +22,12 @@ export class ProductService {
   }
 
   addNewProduct(product: Product): Observable<void> {
-    return this.onlineService.addNewProduct(product);
+    if (this.isOnline()){
+      return this.onlineService.addNewProduct(product);
+
+    }else {
+      return this.offlineService.addNewProductForSyncLater(product)
+    }
 
   }
 

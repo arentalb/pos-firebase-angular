@@ -71,4 +71,27 @@ export class ImageService {
       };
     });
   }
+  fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      if (!file) {
+        reject(new Error('No file selected.'));
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          // Extract base64 portion from the Data URL
+          const base64String = reader.result.split(',')[1];
+          resolve(base64String);
+        } else {
+          reject(new Error('Failed to read file contents.'));
+        }
+      };
+
+      reader.readAsDataURL(file);
+    });
+  }
+
 }

@@ -1,14 +1,16 @@
 import {Injectable} from '@angular/core';
-import {addRxPlugin, createRxDatabase, RxDatabase} from 'rxdb';
+import {createRxDatabase, RxCollection, RxDatabase, RxDocument} from 'rxdb';
 import {getRxStorageDexie} from 'rxdb/plugins/storage-dexie';
 import {RxDBMigrationPlugin} from 'rxdb/plugins/migration';
 import {Product} from "../models/product";
-import {RxDBAttachmentsPlugin} from 'rxdb/plugins/attachments';
 // import {RxDBDevModePlugin} from "rxdb/dist/types/plugins/dev-mode";
 // addRxPlugin(RxDBDevModePlugin);
 addRxPlugin(RxDBMigrationPlugin);
 addRxPlugin(RxDBAttachmentsPlugin);
-
+import { addRxPlugin } from 'rxdb';
+import { RxDBAttachmentsPlugin } from 'rxdb/plugins/attachments';
+import {ImageService} from "./image.service";
+addRxPlugin(RxDBAttachmentsPlugin);
 @Injectable({
   providedIn: 'root',
 })
@@ -58,6 +60,10 @@ export class RxDBService {
       sellQuantity: {
         type: 'number',
       },
+
+    },
+    attachments: {
+      encrypted: false,
     },
     required: [
       'name',
@@ -72,7 +78,7 @@ export class RxDBService {
 
   private myDatabase: RxDatabase | null = null; // Store the database instance
 
-  constructor() {
+  constructor(private imageService: ImageService) {
     this.initDatabase().then((result) => {
       this.myDatabase = result; // Save the database instance
       console.log('Database created:', result);
@@ -82,6 +88,24 @@ export class RxDBService {
       // });
     });
 
+  }
+
+  private async initDatabase(): Promise<RxDatabase> {
+    const myDatabase = await createRxDatabase({
+      name: 'mydatabase',
+      storage: getRxStorageDexie(),
+    });
+
+    await myDatabase.addCollections({
+      products: {
+        schema: this.mySchema,
+      },
+      syncProducts: {
+        schema: this.mySchema,
+      },
+    });
+
+    return myDatabase;
   }
 
   async saveProducts(products: Product[]): Promise<void> {
@@ -139,23 +163,33 @@ export class RxDBService {
     }
   }
 
-  private async initDatabase(): Promise<RxDatabase> {
-    const myDatabase = await createRxDatabase({
-      name: 'mydatabase',
-      storage: getRxStorageDexie(),
-    });
+  async addNewProductForSyncLater(product: Product): Promise<void> {
+    console.log(product)
+    console.log("1")
+    let newProduct: Product;
+    try {
+      const data = await this.imageService.fileToBase64(product.image);
+      console.log("2")
+      newProduct = {
+        key: '1',
+        ...product
+      };
+      newProduct.image = null
+      newProduct.imageUrl = data
+      console.log('New Product:', newProduct);
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
+    console.log("3")
 
-    await myDatabase.addCollections({
-      products: {
-        schema: this.mySchema,
-      },
-    });
+    const rxDocument: RxDocument = await this.myDatabase['syncProducts'].insert(newProduct);
+    console.log("4")
 
-    return myDatabase;
+
   }
 
-}
 
+}
 // private async insertSampleObject(database: RxDatabase): Promise<void> {
 //
 //   const sampleObject = {
