@@ -43,6 +43,17 @@ export class OnlineService {
         })
       );
   }
+  syncNewProduct(product: Product){
+    console.log("sync new product .....")
+    return from(this.uploadImage(product.image))
+      .pipe(
+        switchMap(imageUrl => this.saveProductToDatabase(product, imageUrl)),
+        catchError(error => {
+          console.error('Error adding new product:', error);
+          throw error;
+        })
+      )
+  }
 
   private uploadImage(image: File): Promise<string> {
     const filePath = `images/${Date.now()}_${image.name}`;

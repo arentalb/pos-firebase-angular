@@ -44,6 +44,16 @@ export class DexieService extends Dexie{
 
     return  from(this.offlineProducts.add(product))
   }
+
+   getAllProductsForSyncing() {
+      return   this.offlineProducts.toArray()
+  }
+
+  removeProductById(key: string) {
+    return this.offlineProducts.delete(key);
+
+  }
+
 }
 
 

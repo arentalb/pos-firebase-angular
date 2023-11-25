@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {SwUpdate} from "@angular/service-worker";
+import {SyncService} from "./services/sync.service";
 
 @Component({
   selector: 'app-root',
@@ -9,7 +10,7 @@ import {SwUpdate} from "@angular/service-worker";
 })
 export class AppComponent implements OnInit{
   title = 'pos';
-  constructor(private swUpdate: SwUpdate ) {
+  constructor(private swUpdate: SwUpdate ,private syncService :SyncService) {
 
 
   }
@@ -28,6 +29,11 @@ export class AppComponent implements OnInit{
       });
     }
     // this.syncService.ngOnInit()
+    setInterval(() => {
+      this.syncService.startSync().then(() => {
+        console.log('Sync completed');
+      });
+    }, 30000);
   }
 
 }

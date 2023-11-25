@@ -3,14 +3,13 @@ import {Product} from "../models/product";
 import {OnlineService} from "./online.service";
 import {concatMap, Observable, tap} from "rxjs";
 import {OfflineService} from "./offline.service";
-import {ImageService} from "./image.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
-  constructor(private onlineService :OnlineService , private offlineService :OfflineService ,private imageService :ImageService) { }
+  constructor(private onlineService :OnlineService , private offlineService :OfflineService ) { }
 
 
   isOnline(): boolean {
@@ -31,13 +30,6 @@ export class ProductService {
     if (this.isOnline()) {
       console.log("app is online ");
       return this.onlineService.getProducts().pipe(
-        tap((products: Product[]) => {
-          console.log("before");
-          console.log(products);
-        }),
-        concatMap((products) =>
-          this.imageService.mapProductsToBase64(products)
-        ),
         tap((products: Product[]) => {
           console.log("after");
           console.log(products);
