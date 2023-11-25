@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Product} from "../models/product";
-import {of} from "rxjs";
+import {from, Observable, of} from "rxjs";
 import {DexieService} from "./dexie.service";
 
 @Injectable({
@@ -18,7 +18,8 @@ export class OfflineService {
       })
 
   }
-  getSavedProducts(){
-    return of([])
+  getSavedProducts():Observable<Product[]>{
+
+    return from(this.dexieservice.getSavedOnlineProducts())
   }
 }

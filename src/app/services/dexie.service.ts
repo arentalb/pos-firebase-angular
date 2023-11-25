@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import Dexie from "dexie";
 import {Product} from "../models/product";
+import {from, Observable, of} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +28,11 @@ export class DexieService extends Dexie{
 
   }
 
+  getSavedOnlineProducts() :Observable<Product[]>{
+    console.log("newest saved products fetched  ")
+
+    return from(this.onlineProducts.toArray());
+  }
 }
 
 
