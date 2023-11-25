@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import { Router} from "@angular/router";
 import {SwUpdate} from "@angular/service-worker";
+import {SyncService} from "./services/sync.service";
 
 
 @Component({
@@ -10,7 +11,7 @@ import {SwUpdate} from "@angular/service-worker";
 })
 export class AppComponent implements OnInit{
   title = 'pos';
-  constructor(private router: Router ,private swUpdate: SwUpdate) {
+  constructor(private router: Router ,private swUpdate: SwUpdate , private syncService :SyncService) {
 
 
   }
@@ -28,8 +29,9 @@ export class AppComponent implements OnInit{
         }
       });
     }
-
+    // this.syncService.ngOnInit()
   }
+
 
 }
 

@@ -8,7 +8,7 @@ import {Product} from "../models/product";
 addRxPlugin(RxDBMigrationPlugin);
 addRxPlugin(RxDBAttachmentsPlugin);
 import { addRxPlugin } from 'rxdb';
-import { RxDBAttachmentsPlugin } from 'rxdb/plugins/attachments';
+import {RxAttachment, RxDBAttachmentsPlugin} from 'rxdb/plugins/attachments';
 import {ImageService} from "./image.service";
 addRxPlugin(RxDBAttachmentsPlugin);
 @Injectable({
@@ -163,32 +163,89 @@ export class RxDBService {
     }
   }
 
+  // async addNewProductForSyncLater(product: Product): Promise<void> {
+  //   console.log(product)
+  //   console.log("1")
+  //   let newProduct: Product;
+  //   try {
+  //     const data = await this.imageService.fileToBase64(product.image);
+  //     console.log("2")
+  //     newProduct = {
+  //       key: '1',
+  //       ...product
+  //     };
+  //     newProduct.image = null
+  //     newProduct.imageUrl = data
+  //     console.log('New Product:', newProduct);
+  //   } catch (error) {
+  //     console.error('Error:', error.message);
+  //   }
+  //   console.log("3")
+  //
+  //   const rxDocument: RxDocument = await this.myDatabase['syncProducts'].insert(newProduct);
+  //   console.log("4")
+  //
+  //
+  // }
   async addNewProductForSyncLater(product: Product): Promise<void> {
+    product.key = "23"
     console.log(product)
-    console.log("1")
-    let newProduct: Product;
-    try {
-      const data = await this.imageService.fileToBase64(product.image);
-      console.log("2")
-      newProduct = {
-        key: '1',
-        ...product
-      };
-      newProduct.image = null
-      newProduct.imageUrl = data
-      console.log('New Product:', newProduct);
-    } catch (error) {
-      console.error('Error:', error.message);
-    }
-    console.log("3")
 
-    const rxDocument: RxDocument = await this.myDatabase['syncProducts'].insert(newProduct);
-    console.log("4")
+   await this.imageService.convertImageToBase64(product.image).then((stringData)=>{
+     product.imageUrl = stringData
+   })
+    product.image = null ;
+
+
+    let documnet :RxDocument= await this.myDatabase['syncProducts'].insert(product)
+
+
+
+
 
 
   }
+  async getProductsForSyncing(): Promise<Product[]> {
+    if (!this.myDatabase) {
+      console.error('Database not initialized.');
+      return [];
+    }
 
+    try {
+      const products = await this.myDatabase['syncProducts'].find().exec();
+      console.log('sync Products retrieved:');
+      return products;
+    } catch (error) {
+      console.error('Error retrieving sync products:', error);
+      return [];
+    }
+  }
 
+  async deleteSyncedProduct(productKey: string): Promise<void> {
+    if (!this.myDatabase) {
+      console.error('Database not initialized.');
+      return;
+    }
+
+    try {
+      // Find the product with the specified key
+      const product = await this.myDatabase['syncProducts'].findOne({
+        selector: {
+          key: productKey
+        }
+      }).exec();
+
+      if (product) {
+        // If the product is found, remove it from the database
+        await product.remove();
+        console.log(`Product with key ${productKey} deleted.`);
+      } else {
+        console.log(`Product with key ${productKey} not found.`);
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error);
+    }
+  }
 }
 // private async insertSampleObject(database: RxDatabase): Promise<void> {
 //
