@@ -22,4 +22,8 @@ export class OfflineService {
 
     return from(this.dexieservice.getSavedOnlineProducts())
   }
+
+  addNewProductForSync(product: Product) :Observable<void>{
+    return this.dexieservice.addNewSyncProduct(product);
+  }
 }

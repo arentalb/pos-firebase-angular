@@ -9,11 +9,14 @@ import {from, Observable, of} from "rxjs";
 export class DexieService extends Dexie{
 
   onlineProducts: Dexie.Table<Product , string>;
+  offlineProducts: Dexie.Table<Product>;
 
   constructor() {
-    super("onlineProducts");
-    this.version(2).stores({
+    super("products");
+    this.version(3).stores({
       onlineProducts: 'key,name,category,quantity,basePrice,salePrice,imageUrl',
+      offlineProducts: 'key,name,category,quantity,basePrice,salePrice,image',
+
       //...other tables goes here...
     });
   }
@@ -32,6 +35,14 @@ export class DexieService extends Dexie{
     console.log("newest saved products fetched  ")
 
     return from(this.onlineProducts.toArray());
+  }
+
+  addNewSyncProduct(product: Product) :Observable<void>{
+    if (!product.key) {
+      product.key = new Date().getTime().toString();
+    }
+
+    return  from(this.offlineProducts.add(product))
   }
 }
 
