@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { AngularFireDatabase } from "@angular/fire/compat/database";
-import {from, map, Observable} from 'rxjs';
+import {from, map, Observable, tap} from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { Product } from "../models/product";
 
@@ -47,9 +47,14 @@ export class OnlineService {
     console.log("sync new product .....")
     return from(this.uploadImage(product.image))
       .pipe(
+        tap(()=>{
+          if (product.quantity===1 ){
+            throw new Error("errorrrr")
+          }
+        }),
         switchMap(imageUrl => this.saveProductToDatabase(product, imageUrl)),
         catchError(error => {
-          console.error('Error adding new product:', error);
+          console.error('Error adding new product:--');
           throw error;
         })
       )

@@ -19,6 +19,7 @@ import {AngularFireModule} from "@angular/fire/compat";
 import {AngularFireStorageModule} from "@angular/fire/compat/storage";
 import {AngularFireDatabaseModule} from "@angular/fire/compat/database";
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { ErrorDataComponent } from './error-data/error-data.component';
 
 
 
@@ -35,6 +36,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     SellComponent,
     SoldProductsComponent,
     AvailableProductsComponent,
+    ErrorDataComponent,
 
   ],
   imports: [

@@ -3,6 +3,7 @@ import {RouterModule, Routes} from "@angular/router";
 import {HomeComponent} from "./home/home.component";
 import {InventoryComponent} from "./inventory/inventory.component";
 import {SellComponent} from "./sell/sell.component";
+import {ErrorDataComponent} from "./error-data/error-data.component";
 
 
 const routes: Routes = [
@@ -10,6 +11,8 @@ const routes: Routes = [
 
   { path: 'admin' ,children :[
       { path: 'inventory', component: InventoryComponent },
+      { path: 'error-data', component: ErrorDataComponent },
+
     ]},
 
   { path: 'user' ,children :[

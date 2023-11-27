@@ -10,24 +10,23 @@ export class DexieService extends Dexie{
 
   onlineProducts: Dexie.Table<Product , string>;
   offlineProducts: Dexie.Table<Product>;
+  errorProducts: Dexie.Table<Product>;
 
   constructor() {
     super("products");
-    this.version(3).stores({
+    this.version(4).stores({
       onlineProducts: 'key,name,category,quantity,basePrice,salePrice,imageUrl',
       offlineProducts: 'key,name,category,quantity,basePrice,salePrice,image',
+      errorProducts: 'key,name,category,quantity,basePrice,salePrice,image',
 
       //...other tables goes here...
     });
   }
 
-  async clearSavedProducts(){
-  await  this.onlineProducts.clear()
-    console.log("all onlineProducts is removed ")
-  }
   async saveProducts(products: Product[]) {
-    await this.clearSavedProducts()
+    await  this.onlineProducts.clear()
     await this.onlineProducts.bulkAdd(products)
+
 
   }
 
@@ -45,15 +44,30 @@ export class DexieService extends Dexie{
     return  from(this.offlineProducts.add(product))
   }
 
-   getAllProductsForSyncing() {
-      return   this.offlineProducts.toArray()
+  async getAllProductsForSyncing() {
+      return    this.offlineProducts.toArray()
   }
 
-  removeProductById(key: string) {
-    return this.offlineProducts.delete(key);
+  async removeProductById(key: string) {
+    return  this.offlineProducts.delete(key);
+
+  }
+  async  addProductToErrorTableAndRemoveProductById(product :Product) {
+    await  this.offlineProducts.delete(product.key);
+
+    return  this.errorProducts.add(product)
 
   }
 
+  async  getErrorProducts (){
+   return   this.errorProducts.toArray()
+
+  }
+
+  async deleteErrorProducts(product: Product) {
+    await  this.errorProducts.delete(product.key);
+
+  }
 }
 
 
