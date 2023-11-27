@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from "@angular/fire/compat/storage";
 import { AngularFireDatabase } from "@angular/fire/compat/database";
-import {from, map, Observable, tap} from 'rxjs';
+import {from, map, Observable, take, tap, throwError} from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { Product } from "../models/product";
 
@@ -15,6 +15,29 @@ export class OnlineService {
     private db: AngularFireDatabase
   ) {}
 
+  subtractPcsOfSoldProduct(productKey: string, productPcs: number): Observable<void> {
+    const productRef = this.db.object(`products/${productKey}`); // Adjust the path accordingly
+
+    return productRef.valueChanges().pipe(
+      take(1), // Take one snapshot of the current product state
+      switchMap((product: Product) => {
+        if (product) {
+          const newPcs = product.quantity - productPcs;
+          if (newPcs >= 0) { // Ensure the quantity doesn't go below zero
+            return from(productRef.update({ quantity: newPcs }));
+          } else {
+            throw new Error('Not enough quantity available.');
+          }
+        } else {
+          throw new Error('Product not found.');
+        }
+      }),
+      catchError((error) => {
+        console.error('Error updating product quantity:', error);
+        return throwError(error);
+      })
+    );
+  }
   getProducts(): Observable<Product[]> {
     const productsRef = this.db.list('products');
     return productsRef.snapshotChanges().pipe(
@@ -72,8 +95,13 @@ export class OnlineService {
     product.imageUrl = imageUrl;
     delete product.image;
 
+    let pro :Product = {...product , key :null }
+    console.log("[[[[[")
+    console.log(pro)
+    console.log("]]]]]")
+
     return new Observable<void>(observer => {
-      productsRef.push(product)
+      productsRef.push(pro)
         .then(() => {
           console.log("product added successfully")
           observer.next();

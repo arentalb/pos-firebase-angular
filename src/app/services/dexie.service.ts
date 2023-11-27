@@ -11,13 +11,16 @@ export class DexieService extends Dexie{
   onlineProducts: Dexie.Table<Product , string>;
   offlineProducts: Dexie.Table<Product>;
   errorProducts: Dexie.Table<Product>;
+  soldProducts: Dexie.Table<{ key :string , sellQuantity:number } , number >;
+
 
   constructor() {
     super("products");
-    this.version(4).stores({
+    this.version(5).stores({
       onlineProducts: 'key,name,category,quantity,basePrice,salePrice,imageUrl',
       offlineProducts: 'key,name,category,quantity,basePrice,salePrice,image',
       errorProducts: 'key,name,category,quantity,basePrice,salePrice,image',
+      soldProducts: '++id , key,sellQuantity',
 
       //...other tables goes here...
     });
@@ -66,6 +69,39 @@ export class DexieService extends Dexie{
 
   async deleteErrorProducts(product: Product) {
     await  this.errorProducts.delete(product.key);
+
+  }
+
+  async subtractPcsOfSoldProduct(key: string, sellQuantity: number): Promise<void> {
+    try {
+      // Retrieve the product from the onlineProducts table
+      const product = await this.onlineProducts.get(key);
+
+      if (product) {
+        // Subtract the sold quantity
+        product.quantity -= sellQuantity;
+
+        // Update the product in the onlineProducts table
+        await this.onlineProducts.update(key, { quantity: product.quantity });
+        await this.soldProducts.add({key: key, sellQuantity: sellQuantity});
+      } else {
+        // Handle the case where the product with the given key is not found
+        throw new Error(`Product with key ${key} not found.`);
+      }
+    } catch (error) {
+      // Handle errors appropriately (e.g., log or rethrow)
+      console.error('Error subtracting sold quantity:', error);
+      throw error;
+    }
+  }
+
+  async getAllSoldProducts() {
+    return   this.soldProducts.toArray()
+
+  }
+
+  deleteSoldProduct(key: string){
+    return this.soldProducts.where('key').equals(key).delete();
 
   }
 }

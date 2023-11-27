@@ -4,7 +4,8 @@ import {Product} from "../../models/product";
 @Component({
   selector: 'app-available-products',
   templateUrl: './available-products.component.html',
-  styleUrls: ['./available-products.component.css']
+  styleUrls: ['./available-products.component.css'],
+
 })
 export class AvailableProductsComponent {
   @Input() product :Product
@@ -24,6 +25,7 @@ export class AvailableProductsComponent {
   }
 
   addProduct() {
-
+    let pro :Product = {...this.product , sellQuantity :this.psc}
+    this.addProductEvent.emit(pro)
   }
 }
