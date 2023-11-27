@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Product} from "../models/product";
 import {OnlineService} from "./online.service";
-import {concatMap, Observable, tap} from "rxjs";
+import {Observable, tap} from "rxjs";
 import {OfflineService} from "./offline.service";
 
 @Injectable({
@@ -9,7 +9,8 @@ import {OfflineService} from "./offline.service";
 })
 export class ProductService {
 
-  constructor(private onlineService :OnlineService , private offlineService :OfflineService ) { }
+  constructor(private onlineService: OnlineService, private offlineService: OfflineService) {
+  }
 
 
   isOnline(): boolean {
@@ -17,37 +18,31 @@ export class ProductService {
   }
 
 
-  addNewProduct(product :Product):Observable<void>{
-    if (this.isOnline()){
-      return  this.onlineService.addNewProduct(product);
-    }else {
-      return  this.offlineService.addNewProductForSync(product);
+  addNewProduct(product: Product): Observable<void> {
+    if (this.isOnline()) {
+      console.log(`service (ProductService) - method (addNewProduct) - if block - app is online - ${product.name}`)
+
+      return this.onlineService.addNewProduct(product);
+    } else {
+      console.log(`service (ProductService) - method (addNewProduct) - else block - app is offline - ${product.name}`)
+
+      return this.offlineService.addNewProductForSync(product);
     }
 
   }
 
   getProducts() {
     if (this.isOnline()) {
-      console.log("app is online ");
+      console.log(`service (ProductService) - method (getProducts) - if block - app is online `)
       return this.onlineService.getProducts().pipe(
         tap((products: Product[]) => {
-          console.log("after");
-          console.log(products);
           this.offlineService.saveProducts(products)
-          console.log("in get product in productService ");
-          // products.forEach((data )=>{
-          //  console.log(data)
-          // })
         })
       );
     } else {
-      console.log("app is offline  ");
+      console.log(`service (ProductService) - method (getProducts) - else block - app is offline `)
       return this.offlineService.getSavedProducts().pipe(
         tap((data) => {
-          // data.forEach((a) => {
-          //   console.log("product name is " + a.name);
-          //   console.log(a);
-          // });
         })
       );
     }

@@ -1,4 +1,4 @@
-import {Injectable, OnDestroy, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Subject} from "rxjs";
 import {Product} from "../models/product";
 
@@ -7,11 +7,10 @@ import {Product} from "../models/product";
 })
 export class DataErrorService {
 
-  constructor() { }
-  productsThatHasError :Subject<Product>= new Subject<Product>()
+  productsThatHasError: Subject<Product> = new Subject<Product>()
 
-
-
+  constructor() {
+  }
 
 
 }

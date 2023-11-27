@@ -22,7 +22,7 @@ export class SellComponent implements OnInit{
 
     })
     this.sellingOffline.newDataSubject.subscribe((message)=>{
-      console.log(message)
+      // console.log(message)
       this.sellingProductService.fetchAvailableProducts().subscribe((pro)=>{
         this.sellProducts = pro
       })
@@ -41,7 +41,7 @@ export class SellComponent implements OnInit{
 
   checkout() {
     this.sellingProductService.sellAllSoldProducts(this.soldProducts).subscribe(()=>{
-      console.log("all sold products saved ")
+      // console.log("all sold products saved ")
       this.soldProducts = []
     })
   }

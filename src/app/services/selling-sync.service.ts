@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {DexieService} from "./dexie.service";
-import {Product} from "../models/product";
 import {OnlineService} from "./online.service";
 
 @Injectable({
@@ -8,41 +7,49 @@ import {OnlineService} from "./online.service";
 })
 export class SellingSyncService {
 
-  constructor(private dexieService :DexieService , private onlineService :OnlineService) { }
+  constructor(private dexieService: DexieService, private onlineService: OnlineService) {
+  }
 
-  async startSync(){
-    console.log("start syncing ")
-    const products = await this.dexieService.getAllSoldProducts();
-    console.log("111111111111111")
-    console.log(products)
-    console.log("111111111111111")
+  isOnline(): boolean {
+    return navigator.onLine;
+  }
+  async startSync() {
 
-    if (products.length > 0) {
-      await this.syncProductsSequentially(products);
-    } else {
-      console.log("no product for syncing ");
+    console.log(`service (SellingSyncService) - method (startSync) `)
+
+    if (this.isOnline()) {
+      console.log(`service (SellingSyncService) - method (startSync) - if block`)
+
+      const products = await this.dexieService.getAllSoldProducts();
+
+      if (products.length > 0) {
+        console.log(`service (SellingSyncService) - method (startSync) - if block`)
+
+        await this.syncProductsSequentially(products);
+      } else {
+        console.log(`service (SellingSyncService) - method (startSync) - else block `)
+
+      }
+    }else {
+      console.log(`service (SellingSyncService) - method (startSync) - else block`)
+
     }
 
+
   }
-  async syncProductsSequentially(data :{ key :string , sellQuantity:number } [] , index: number = 0) {
+
+  async syncProductsSequentially(data: { key: string, sellQuantity: number } [], index: number = 0) {
+    console.log(`service (SellingSyncService) - method (syncProductsSequentially)  `)
+
     if (index < data.length) {
+      console.log(`service (SellingSyncService) - method (syncProductsSequentially) - if block `)
       const pro = data[index];
-      console.log(pro);
-
       try {
-        await this.onlineService.subtractPcsOfSoldProduct(pro.key , pro.sellQuantity).toPromise();
-        console.log("new product synced ");
-        console.log(pro);
-
+        await this.onlineService.subtractPcsOfSoldProduct(pro.key, pro.sellQuantity).toPromise();
         await this.dexieService.deleteSoldProduct(pro.key)
-        console.log("product deleted with the key of " + pro.key);
       } catch (error) {
-
-        console.error('Error in subscription:');
-        // Log the error and continue with the next product
+        console.log(`service (SellingSyncService) - method (syncProductsSequentially) - error `)
       }
-
-      // Recursively call the function for the next product
       await this.syncProductsSequentially(data, index + 1);
     }
   }

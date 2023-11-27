@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Product} from "../models/product";
 import {OnlineService} from "./online.service";
 import {forkJoin, Observable} from "rxjs";
@@ -8,9 +8,12 @@ import {forkJoin, Observable} from "rxjs";
 })
 export class SellingOnlineService {
 
-  constructor(private onlineService :OnlineService) { }
+  constructor(private onlineService: OnlineService) {
+  }
 
   sellProducts(products: Product[]) {
+    console.log(`service (SellingOnlineService) - method (sellProducts) `)
+
     const observables: Observable<void>[] = [];
 
     for (const product of products) {

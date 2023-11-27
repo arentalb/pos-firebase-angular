@@ -26,10 +26,8 @@ export class ErrorDataComponent implements OnInit {
       this.products = products
     })
     this.dataErrorService.productsThatHasError.subscribe((product)=>{
-      console.log("---------------")
-      console.log(product)
-      console.log("---------------")
-      console.log(this.products)
+
+      // console.log(this.products)
       this.products.push(product)
       this.router.navigate(['admin','error-data'])
 
@@ -56,13 +54,13 @@ export class ErrorDataComponent implements OnInit {
   categoryValues = Object.values(Category);
 
   onSubmit(form: NgForm) {
-    console.log(this.product)
+    // console.log(this.product)
     if (form.valid && this.product.image !== null ) {
       // this.productChanged.emit(this.product)
 
       this.onlineService.addNewProduct(this.product).subscribe(()=>{
         this.dexieService.deleteErrorProducts(this.product).then(()=>{
-          console.log("error products fixed and deleted ")
+          // console.log("error products fixed and deleted ")
           const index = this.products.findIndex(p => p === this.product);
           if (index !== -1) {
             this.products.splice(index, 1);

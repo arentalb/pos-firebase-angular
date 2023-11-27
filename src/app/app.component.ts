@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
 import {SwUpdate} from "@angular/service-worker";
 import {SyncService} from "./services/sync.service";
 import {SellingSyncService} from "./services/selling-sync.service";
@@ -9,15 +8,15 @@ import {SellingSyncService} from "./services/selling-sync.service";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   title = 'pos';
+
   constructor(private swUpdate: SwUpdate
-              ,private syncService :SyncService
-  ,private sellSyncServise :SellingSyncService) {
+    , private syncService: SyncService
+    , private sellSyncServise: SellingSyncService) {
 
 
   }
-
 
 
   ngOnInit() {
@@ -25,7 +24,7 @@ export class AppComponent implements OnInit{
 
       this.swUpdate.available.subscribe(() => {
 
-        if(confirm("New version available. Load New Version?")) {
+        if (confirm("New version available. Load New Version?")) {
 
           window.location.reload();
         }
@@ -34,10 +33,10 @@ export class AppComponent implements OnInit{
     // this.syncService.ngOnInit()
     setInterval(() => {
       this.syncService.startSync().then(() => {
-        console.log('Sync completed');
+        console.log(`service (AppComponent) - method (setInterval) - syncService`)
       });
       this.sellSyncServise.startSync().then(() => {
-        console.log('sell Sync completed');
+        console.log(`service (AppComponent) - method (setInterval) - sellSyncServise`)
       });
     }, 30000);
   }

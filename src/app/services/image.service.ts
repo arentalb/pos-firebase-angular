@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {concatMap, from, map, Observable, of, toArray} from "rxjs";
 import {AngularFireStorage} from "@angular/fire/compat/storage";
 import {Product} from "../models/product";
@@ -9,13 +9,15 @@ import {catchError} from "rxjs/operators";
 })
 export class ImageService {
 
-  constructor(private storage: AngularFireStorage) {}
-   mapProductsToBase64(products: Product[]): Observable<Product[]> {
+  constructor(private storage: AngularFireStorage) {
+  }
+
+  mapProductsToBase64(products: Product[]): Observable<Product[]> {
     let base64ImagePrefix = "data:image/png;base64,"
     return from(products).pipe(
       concatMap((product) =>
         this.downloadAndConvertToBase64(product.imageUrl).pipe(
-          map((base64Data) => ({...product, imageUrl: base64ImagePrefix+ base64Data})),
+          map((base64Data) => ({...product, imageUrl: base64ImagePrefix + base64Data})),
           catchError((error) => {
             // Log the error
             console.error(`Error processing image for product ${product.name}`, error);
@@ -27,6 +29,7 @@ export class ImageService {
       toArray() // Convert back to an array after processing all products
     );
   }
+
   downloadAndConvertToBase64(imageUrl: string): Observable<string> {
     return new Observable((observer) => {
       try {
