@@ -9,15 +9,15 @@ import {ImageService} from "./image.service";
 })
 export class OfflineService {
 
-  constructor(private dexieservice: DexieService, private imageservice: ImageService) {
+  constructor(private dexieService: DexieService, private imageService: ImageService) {
   }
 
-  saveProducts(products: Product[]) {
+  saveProductsa(products: Product[]) {
     console.log(`service (OfflineService) - method (saveProducts) `)
 
-    this.imageservice.mapProductsToBase64(products).subscribe((newproducts) => {
+    this.imageService.mapProductsToBase64(products).subscribe((newproducts) => {
       products = newproducts
-      this.dexieservice.saveProducts(products).then((data) => {
+      this.dexieService.saveProducts(products).then((data) => {
 
       })
     })
@@ -25,15 +25,41 @@ export class OfflineService {
 
   }
 
+  saveProducts(products: Product[]) {
+    console.log(`service (OfflineService) - method (saveProducts) `);
+
+    // Get the keys of the provided products
+    const productKeys = products.map((product) => product.key);
+
+    // Check if each product already exists in Dexie
+    this.dexieService.checkIfProductExistWithKey(productKeys).subscribe((existingProducts) => {
+
+      // Extract keys of existing products
+      const existingKeys = existingProducts.map((product) => product.key);
+
+      // Filter out products that do not exist in Dexie
+      const newProducts = products.filter((product) => !existingKeys.includes(product.key));
+
+      // Map the new products to base64
+      this.imageService.mapProductsToBase64(newProducts).subscribe((newProductsMapped) => {
+        // Save the new products to Dexie
+        this.dexieService.saveProducts(newProductsMapped).then((data) => {
+          // Handle the result if needed
+        });
+      });
+    });
+
+  }
+
   getSavedProducts(): Observable<Product[]> {
     console.log(`service (OfflineService) - method (getSavedProducts) `)
 
-    return from(this.dexieservice.getSavedOnlineProducts())
+    return from(this.dexieService.getSavedOnlineProducts())
   }
 
   addNewProductForSync(product: Product): Observable<void> {
     console.log(`service (OfflineService) - method (addNewProductForSync) - ${product.name} `)
 
-    return this.dexieservice.addNewSyncProduct(product);
+    return this.dexieService.addNewSyncProduct(product);
   }
 }

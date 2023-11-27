@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import Dexie from "dexie";
 import {Product} from "../models/product";
 import {from, Observable} from "rxjs";
+import {catchError} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,6 @@ export class DexieService extends Dexie {
     console.log(`service (DexieService) - method (saveProducts)`);
 
     await this.transaction('rw', this.onlineProducts, async () => {
-      await this.onlineProducts.clear();
       await this.onlineProducts.bulkAdd(products);
     });
   }
@@ -132,6 +132,15 @@ export class DexieService extends Dexie {
 
     return this.soldProducts.where('key').equals(key).delete();
 
+  }
+
+  checkIfProductExistWithKey(keys: string[]): Observable<Array<Product>> {
+    return from(this.onlineProducts.where('key').anyOf(keys).toArray()).pipe(
+      catchError((error) => {
+        console.error('DexieService - checkIfProductExistWithKey error:', error);
+        throw error;
+      }),
+    );
   }
 }
 

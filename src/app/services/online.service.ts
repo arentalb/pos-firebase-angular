@@ -75,13 +75,14 @@ export class OnlineService {
 
   syncNewProduct(product: Product) {
     console.log(`service (OnlineService) - method (syncNewProduct) - ${product.name} `)
+    if (product.quantity === 1) {
+      console.log(`service (OnlineService) - method (syncNewProduct) - error - ${product.name}`)
+      throw new Error(`error in  (OnlineService) - (syncNewProduct) if block - ${product.name} `)
+    }
     return from(this.uploadImage(product.image))
       .pipe(
         tap(() => {
-          if (product.quantity === 1) {
-            console.log(`service (OnlineService) - method (syncNewProduct) - error - ${product.name}`)
-            throw new Error(`error in  (OnlineService) - (syncNewProduct) if block - ${product.name} `)
-          }
+
         }),
         switchMap(imageUrl => this.saveProductToDatabase(product, imageUrl)),
         catchError(error => {
