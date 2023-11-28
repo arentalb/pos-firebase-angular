@@ -33,6 +33,7 @@ export class DexieService extends Dexie {
     console.log(`service (DexieService) - method (saveProducts)`);
 
     await this.transaction('rw', this.onlineProducts, async () => {
+      await this.onlineProducts.clear();
       await this.onlineProducts.bulkAdd(products);
     });
   }
