@@ -12,7 +12,7 @@ export class OfflineService {
   constructor(private dexieService: DexieService, private imageService: ImageService) {
   }
 
-  saveProductsa(products: Product[]) {
+  saveProducts(products: Product[]) {
     console.log(`service (OfflineService) - method (saveProducts) `)
 
     this.imageService.mapProductsToBase64(products).subscribe((newproducts) => {
@@ -25,31 +25,31 @@ export class OfflineService {
 
   }
 
-  saveProducts(products: Product[]) {
-    console.log(`service (OfflineService) - method (saveProducts) `);
-
-    // Get the keys of the provided products
-    const productKeys = products.map((product) => product.key);
-
-    // Check if each product already exists in Dexie
-    this.dexieService.checkIfProductExistWithKey(productKeys).subscribe((existingProducts) => {
-
-      // Extract keys of existing products
-      const existingKeys = existingProducts.map((product) => product.key);
-
-      // Filter out products that do not exist in Dexie
-      const newProducts = products.filter((product) => !existingKeys.includes(product.key));
-
-      // Map the new products to base64
-      this.imageService.mapProductsToBase64(newProducts).subscribe((newProductsMapped) => {
-        // Save the new products to Dexie
-        this.dexieService.saveProducts(newProductsMapped).then((data) => {
-          // Handle the result if needed
-        });
-      });
-    });
-
-  }
+  // saveProducts(products: Product[]) {
+  //   console.log(`service (OfflineService) - method (saveProducts) `);
+  //
+  //   // Get the keys of the provided products
+  //   const productKeys = products.map((product) => product.key);
+  //
+  //   // Check if each product already exists in Dexie
+  //   this.dexieService.checkIfProductExistWithKey(productKeys).subscribe((existingProducts) => {
+  //
+  //     // Extract keys of existing products
+  //     const existingKeys = existingProducts.map((product) => product.key);
+  //
+  //     // Filter out products that do not exist in Dexie
+  //     const newProducts = products.filter((product) => !existingKeys.includes(product.key));
+  //
+  //     // Map the new products to base64
+  //     this.imageService.mapProductsToBase64(newProducts).subscribe((newProductsMapped) => {
+  //       // Save the new products to Dexie
+  //       this.dexieService.saveProducts(newProductsMapped).then((data) => {
+  //         // Handle the result if needed
+  //       });
+  //     });
+  //   });
+  //
+  // }
 
   getSavedProducts(): Observable<Product[]> {
     console.log(`service (OfflineService) - method (getSavedProducts) `)

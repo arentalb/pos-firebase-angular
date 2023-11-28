@@ -135,14 +135,14 @@ export class DexieService extends Dexie {
 
   }
 
-  checkIfProductExistWithKey(keys: string[]): Observable<Array<Product>> {
-    return from(this.onlineProducts.where('key').anyOf(keys).toArray()).pipe(
-      catchError((error) => {
-        console.error('DexieService - checkIfProductExistWithKey error:', error);
-        throw error;
-      }),
-    );
-  }
+  // checkIfProductExistWithKey(keys: string[]): Observable<Array<Product>> {
+  //   return from(this.onlineProducts.where('key').anyOf(keys).toArray()).pipe(
+  //     catchError((error) => {
+  //       console.error('DexieService - checkIfProductExistWithKey error:', error);
+  //       throw error;
+  //     }),
+  //   );
+  // }
 }
 
 
